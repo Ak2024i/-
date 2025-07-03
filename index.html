@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>你是不是喜欢我？</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body, html {
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #ffe6f0;
+            font-family: '微软雅黑', 'Arial', sans-serif;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            position: relative;
+            z-index: 1;
+        }
+        .question {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #e75480;
+            margin-bottom: 50px;
+            text-shadow: 2px 2px 8px #fff0f7;
+        }
+        .choices {
+            display: flex;
+            gap: 80px;
+        }
+        .choice-btn {
+            width: 120px;
+            height: 60px;
+            border: none;
+            outline: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(231,84,128,0.15);
+            transition: background 0.2s, transform 0.1s;
+        }
+        .yes {
+            background: linear-gradient(90deg, #ffb6c1 0%, #e75480 100%);
+            color: white;
+        }
+        .no {
+            background: linear-gradient(90deg, #b2bec3 0%, #636e72 100%);
+            color: white;
+        }
+        .choice-box {
+            width: 120px;
+            height: 60px;
+            border: 2px dashed #e75480;
+            border-radius: 20px;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            color: #e75480;
+            background: #fff0f7;
+        }
+        .hearts {
+            position: fixed;
+            left: 0; top: 0; width: 100vw; height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        a.start-link {
+            display: block;
+            text-align: center;
+            margin-top: 220px;
+            font-size: 2rem;
+            color: #e75480;
+            background: #fff0f7;
+            width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 30px;
+            box-shadow: 0 4px 16px #e7548055;
+            padding: 18px 0;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background 0.2s, color 0.1s;
+        }
+        a.start-link:hover {
+            background: #e75480;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="hearts" id="hearts"></div>
+    <div id="start-page" style="display:block;">
+        <a href="love.html" class="start-link">点击进入</a>
+    </div>
+    <!-- love.html内容请见下一个文件 -->
+</body>
+<script>
+// 流动小爱心背景生成
+function createHearts() {
+    const colors = ['#ff69b4', '#e75480', '#ffb6c1', '#f06292', '#ff8fab'];
+    const hearts = document.getElementById('hearts');
+    for (let i = 0; i < 32; i++) {
+        let heart = document.createElement('div');
+        heart.innerHTML = "&#10084;";
+        let size = Math.random() * 18 + 14;
+        heart.style.position = "absolute";
+        heart.style.fontSize = size + "px";
+        heart.style.color = colors[Math.floor(Math.random() * colors.length)];
+        heart.style.left = (Math.random() * 100) + "vw";
+        heart.style.top = (Math.random() * 100) + "vh";
+        heart.style.opacity = Math.random() * 0.6 + 0.4;
+        heart.style.transition = "top 8s linear, left 8s linear";
+        hearts.appendChild(heart);
+
+        setTimeout(() => floatHeart(heart), 80);
+    }
+}
+
+function floatHeart(heart) {
+    let newLeft = (Math.random() * 100) + "vw";
+    let newTop = (Math.random() * 100) + "vh";
+    heart.style.left = newLeft;
+    heart.style.top = newTop;
+    setTimeout(() => floatHeart(heart), 8000);
+}
+createHearts();
+</script>
+</html>
