@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>你是不是喜欢我？</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body, html {
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #ffe6f0;
+            font-family: '微软雅黑', 'Arial', sans-serif;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            z-index: 1;
+        }
+        .question {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #e75480;
+            margin-bottom: 46px;
+            margin-top: 30px;
+            text-shadow: 2px 2px 8px #fff0f7;
+            letter-spacing: 2px;
+        }
+        .choices {
+            display: flex;
+            gap: 120px;
+            margin-bottom: 30px;
+        }
+        .choice-btn {
+            width: 120px;
+            height: 60px;
+            border: none;
+            outline: none;
+            font-size: 1.4rem;
+            cursor: pointer;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(231,84,128,0.15);
+            transition: background 0.2s, transform 0.1s;
+        }
+        .yes {
+            background: linear-gradient(90deg, #ffb6c1 0%, #e75480 100%);
+            color: white;
+        }
+        .no {
+            background: linear-gradient(90deg, #b2bec3 0%, #636e72 100%);
+            color: white;
+        }
+        .choice-box {
+            width: 120px;
+            height: 60px;
+            border: 2px dashed #e75480;
+            border-radius: 20px;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            color: #e75480;
+            background: #fff0f7;
+        }
+        .hearts {
+            position: fixed;
+            left: 0; top: 0; width: 100vw; height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        #confess-page {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            position: absolute;
+            left: 0; top: 0;
+            z-index: 2;
+        }
+        .confess-content {
+            background: #fff;
+            border-radius: 34px;
+            box-shadow: 0 8px 40px #e7548044;
+            padding: 40px 36px;
+            margin: 0 auto;
+            max-width: 90vw;
+            text-align: center;
+        }
+        .confess-title {
+            font-size: 2.2rem;
+            color: #e75480;
+            font-weight: bold;
+            margin-bottom: 24px;
+        }
+        .confess-list {
+            font-size: 1.4rem;
+            color: #e75480;
+            line-height: 2.2;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+        .love-heart {
+            font-size: 2.5rem;
+            animation: pop 1.2s infinite alternate;
+            color: #e75480;
+            display: inline-block;
+        }
+        @keyframes pop {
+            0% { transform: scale(1);}
+            100% { transform: scale(1.17);}
+        }
+    </style>
+</head>
+<body>
+    <div class="hearts" id="hearts"></div>
+    <div class="container" id="main-page">
+        <div class="question">你是不是喜欢我？</div>
+        <div class="choices">
+            <div>
+                <button class="choice-btn no" id="no-btn">否</button>
+                <div class="choice-box" id="box-no"></div>
+            </div>
+            <div>
+                <button class="choice-btn yes" id="yes-btn">是</button>
+                <div class="choice-box" id="box-yes"></div>
+            </div>
+        </div>
+    </div>
+    <div id="confess-page">
+        <div class="confess-content">
+            <div class="confess-title"><span class="love-heart">❤</span> 我喜欢你！ <span class="love-heart">❤</span></div>
+            <div class="confess-list" id="confess-list">
+                <!-- 表白语和甜言蜜语自动填充 -->
+            </div>
+        </div>
+    </div>
+<script>
+// 流动小爱心动画
+function createHearts() {
+    const colors = ['#ff69b4', '#e75480', '#ffb6c1', '#f06292', '#ff8fab'];
+    const hearts = document.getElementById('hearts');
+    for (let i = 0; i < 38; i++) {
+        let heart = document.createElement('div');
+        heart.innerHTML = "&#10084;";
+        let size = Math.random() * 18 + 14;
+        heart.style.position = "absolute";
+        heart.style.fontSize = size + "px";
+        heart.style.color = colors[Math.floor(Math.random() * colors.length)];
+        heart.style.left = (Math.random() * 100) + "vw";
+        heart.style.top = (Math.random() * 100) + "vh";
+        heart.style.opacity = Math.random() * 0.7 + 0.3;
+        heart.style.transition = "top 8s linear, left 8s linear";
+        hearts.appendChild(heart);
+
+        setTimeout(() => floatHeart(heart), 100);
+    }
+}
+function floatHeart(heart) {
+    let newLeft = (Math.random() * 100) + "vw";
+    let newTop = (Math.random() * 100) + "vh";
+    heart.style.left = newLeft;
+    heart.style.top = newTop;
+    setTimeout(() => floatHeart(heart), 8000);
+}
+createHearts();
+
+// 选择按钮逻辑
+const yesBtn = document.getElementById('yes-btn');
+const noBtn = document.getElementById('no-btn');
+const boxYes = document.getElementById('box-yes');
+const boxNo = document.getElementById('box-no');
+const mainPage = document.getElementById('main-page');
+const confessPage = document.getElementById('confess-page');
+
+yesBtn.onclick = function() {
+    boxYes.innerText = "你选择了：是";
+    setTimeout(() => {
+        showConfess();
+    }, 800);
+};
+noBtn.onclick = function() {
+    boxNo.innerText = "你选择了：否";
+    setTimeout(() => {
+        boxNo.innerText = "";
+        boxYes.innerText = "";
+    }, 1000); // 初始化
+};
+
+function showConfess() {
+    mainPage.style.display = "none";
+    confessPage.style.display = "flex";
+    fillConfess();
+}
+function fillConfess() {
+    const list = [
+        "遇见你，是我最美丽的意外。",
+        "我的心里只有你，没有别人。",
+        "喜欢你，是我做过最坚持的事。",
+        "你就是我的全世界。",
+        "你的笑容，是我每天的动力。",
+        "有你的每一天都很甜。",
+        "我的小心思全都关于你。",
+        "你在我心里，住下了，再也不想搬走。",
+        "想牵你的手，走到世界尽头。",
+        "我爱你，从心动到古稀。",
+        "你是我心底最柔软的光。",
+        "你不在身边时，我会很想你。",
+        "喜欢你这件事，从未后悔过。",
+        "我每天都在想你，偷偷喜欢你。",
+        "你是我做过最美好的梦。"
+    ];
+    let html = "";
+    for (let i = 0; i < list.length; i++) {
+        html += `<div>${list[i]}</div>`;
+    }
+    document.getElementById('confess-list').innerHTML = html;
+}
+</script>
+</body>
+</html>
